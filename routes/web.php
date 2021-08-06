@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\PostHtml;
+use App\Models\Posts;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,22 +18,21 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', [PagesController::class,'index']);
 
 Route::get('/', function () {
-    return view('pages.index');
+    $pages = Posts::all();
+    return view('pages.index', ['pages'=> $pages]);
 });
 
-Route::get('post/{post}', function($slug){
-    $path  = __DIR__ . "/../resources/views/pages/slug/{$slug}.html";
+Route::get('post_html/{post}', function($slug){
+    // find a post by slug and pass it to the view post
+    $post = PostHtml::find($slug);
 
-    if(!file_exists($path)){
-        return redirect('/');
-    }
+    return view('pages.post',[
+        'post' => $post
+    ]);
+});
 
-
-    // using this to cache the content seeing that it doesn't change and help performance
-    $post = cache()->remember("posts.{$slug}", now()->addMinutes(20), function() use($path){
-        var_dump('file_get_contents');
-        return file_get_contents($path);
-    });
+Route::get('posts/{post}', function($id){
+    $post  = Posts::find($id);
 
     return view('pages.post',[
         'post' => $post

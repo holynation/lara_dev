@@ -27,10 +27,11 @@
         </style>
     </head>
     <body>
+        @foreach($pages as $page)
         <article>
-            <h3>{{$post->title}}</h3>
-            <p>{{$post->body}}</p>
+            <h3><a href="/posts/{{ $page->id }}">{{$page->title}}</a></h3>
+            <p>{{$page->excerpt}}</p>
         </article>
-        <a href="/">Go Back</a>
+        @endforeach
     </body>
 </html>
